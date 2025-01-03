@@ -1,0 +1,177 @@
+Index,Repo folder name,Query,Correct Rule ,PrivateGPT Rule,PrivateGPT_Pass,ChatGPT Rule,ChatGPT - Accuracy,Gemini Rule,Gemini - Accuracy,Total_Test_Cases
+0,18F - test,Any user can read/write own session,"allow { object.type == ""session"" object.user_id == subject.id action == [read, write][_] }","allow { object.type == ""session"" subject.global_role == admin action == [read, write][_] }",12,"allow {
+    input.action == ""read""
+    input.object.type == ""session""
+}
+
+allow {
+    input.action == ""write""
+    input.object.type == ""session""
+}",9,"allow {
+  input.object.type == ""session""
+  input.subject.id == input.object.user_id  # User ID match
+  input.action == ""read"" || input.action == ""write""
+}
+",0,14
+1,18F - val,Any logged in user can read global config,allow { object.type == "app_config" not is_null(subject) action == read },"allow { object.type == ""user"" subject.global_role == [admin, maintainer][_] action == read }",8,"allow_read_global_config {
+    input.object.type == ""app_config""
+    input.subject.logged_in
+    input.subject.global_role == ""user"" {
+        input.subject.logged_in == true
+    } else = ""maintainer"" {
+        input.subject.logged_in == true
+    } else = ""observer"" {
+        input.subject.logged_in == true
+    } else = ""admin""
+    input.action == ""read""
+}",0,"allow {
+  input.object.type == ""app_config""
+  input.subject.logged_in == ""true""
+  input.subject.global_role == ""user""
+  input.action == ""read""
+}
+",9,13
+2,CptOfEvilMinions - test,Only global admins and maintainers can read/write packs,"allow { object.type == ""pack"" subject.global_role == admin action == [read, write][_] } allow { object.type == ""pack"" subject.global_role == maintainer action == [read, write][_] }","allow { object.type == ""pack"" subject.global_role == maintainer action == [read, write][_] }",19,"allow {
+    input.object.type == ""pack""
+    input.subject.global_role == ""admin""
+    input.subject.action == ""read""
+}
+
+allow {
+    input.object.type == ""pack""
+    input.subject.global_role == ""maintainer""
+    input.subject.action == ""read""
+}
+
+allow {
+    input.object.type == ""pack""
+    input.subject.global_role == ""admin""
+    input.subject.action == ""write""
+}
+
+allow {
+    input.object.type == ""pack""
+    input.subject.global_role == ""maintainer""
+    input.subject.action == ""write""
+}",17,"allow {
+  input.object.type == ""app_config""
+  input.subject.logged_in == ""true""
+  input.subject.global_role == ""user""
+  input.action == ""read""
+}",0,21
+3,CptOfEvilMinions - val,Team maintainers can read for appropriate teams,"allow { object.type == ""enroll_secret"" team_role(subject, object.team_id) == maintainer action == read }","allow {  not is_null(object.team_id)  object.type == ""mdm_apple_team"" 
+ team_role(subject, object.team_id) == maintainer action == read 
+}",14,"allow {
+    input.object.type == ""mdm_apple_team""
+    input.action == ""read""
+    
+    team_id := input.object.team_id
+    role := input.subject.teams[_].role
+    subject_team_id := input.subject.teams[_].id
+
+    role == ""maintainer""
+    subject_team_id == team_id
+}",10,"allow {
+  input.object.type == ""mdm_apple_team""  # Only applies to ""mdm_apple_team"" objects
+  input.action == ""read""  # Only allows read access
+
+  # Check if user has maintainer role for the specific team being accessed
+  any subject.teams {
+    team.id == input.object.team_id && team.role == ""maintainer""
+  }
+}
+",0,16
+4,DominusKelvinoutput_test.,If role is observer on any team,"team_role(subject, subject.teams[_].id) == observer action == read }","allow { object.type == ""team"" team_role(subject, subject.teams[_].id) == observer action == read }",15,"allow {
+    input.action == ""read""
+    role := input.subject.teams[_].role
+    role == ""observer""
+}",17,"allow {
+  input.object.type == ""mdm_apple_team""  # Only applies to ""mdm_apple_team"" objects
+  input.action == ""read""  # Only allows read access
+
+  # Check if NO team in user's list has maintainer role for the specific team 
+  not exists subject.teams {
+    team.id == input.object.team_id && team.role == ""maintainer""
+  }
+}",0,17
+5,KarlatIwocaoutput_test.,"Team admin, maintainer, observer_plus and observer running an observers_can_run query that belongs to their team and there are no target teams.","allow { object.type == ""targeted_query"" object.observer_can_run == true is_null(subject.global_role) action == run team_role(subject, object.team_id) == [admin, maintainer, observer_plus, observer][_]",allow { object.type == "targeted_query" object.observer_can_run == true is_null(subject.global_role) action == run },25,"allow {
+    input.object.type == ""targeted_query""
+    input.object.observer_can_run
+    input.action == ""run""
+    
+    team_id := input.object.team_id
+    role := input.subject.teams[_].role
+    subject_team_id := input.subject.teams[_].id
+
+    subject_team_id == team_id
+}",21,"allowed_observer_roles := [""admin"", ""maintainer"", ""observer_plus"", ""observer""]
+
+allow {
+  input.object.type == ""targeted_query""
+  input.object.observer_can_run == true  # Only applies to queries with observer_can_run enabled
+  input.action == ""run""
+
+  # Check if user's team matches the team_id in the object
+  subject.teams[_]?.id == input.object.team_id
+
+  # Check if user's role is in the allowed list and there are no target teams
+  subject.role in allowed_observer_roles && len(input.object.target_teams) == 0
+}
+",0,25
+6,TheDyingYAKoutput_test,Only global admins and maintainers can write labels,allow { object.type == "label" subject.global_role == admin action == write } allow { object.type == "label" subject.global_role == maintainer action == write },allow { object.type == "label" subject.global_role == maintainer action == write },13,"allow {
+    input.object.type == ""label""
+    input.action == ""write""
+    input.subject.global_role == ""maintainer""
+}
+
+allow {
+    input.object.type == ""label""
+    input.action == ""write""
+    input.subject.global_role == ""admin""
+}
+",14,"allowed_roles := [""global_admin"", ""maintainer""]
+
+allow {
+  input.object.type == ""label""
+  input.action == ""write""
+  subject.global_role in allowed_roles
+}
+",0,16
+7,blazmanoutput_test,Global gitops can write MDM Apple settings.,allow { object.type == "mdm_apple_settings" subject.global_role == gitops action == write },allow { object.type == "mdm_apple" subject.global_role == gitops action == write },20,"allow {
+    input.object.type == ""mdm_apple_settings""
+    input.action == ""write""
+    input.subject.global_role == ""gitops""
+}",20,"allow {
+  input.object.type == ""mdm_apple_settings""  # Only applies to ""mdm_apple_settings"" objects
+  input.action == ""write""  # Allow write access
+  subject.global_role == ""gitops""  # Only for users with ""global_role: gitops""
+}
+",20,20
+8,empayre,Global admins can read and write Apple devices.,"allow { object.type == ""mdm_apple_device"" subject.global_role == admin action == [read, write][_] }","allow { object.type == ""user"" subject.global_role == admin action == [read, write][_] }",20,"allow {
+    input.object.type == ""mdm_apple_device""
+    input.subject.global_role == ""admin""
+    input.action == ""read""
+}
+
+allow {
+    input.object.type == ""mdm_apple_device""
+    input.subject.global_role == ""admin""
+    input.action == ""write""
+}",20,"allow {
+  input.object.type == ""mdm_apple_device""  # Only applies to ""mdm_apple_device"" objects
+  subject.global_role == ""admin""  # Only for users with ""global_role: admin""
+  input.action in [""read"", ""write""]  # Allow both read and write access
+}
+",0,20
+9,fleetdmoutput_test,"Global admins, maintainers, observers and observer_plus can read all software.","allow { object.type == ""software_inventory"" subject.global_role == [admin, maintainer, observer, observer_plus][_] action == read }","allow { object.type == ""software"" subject.global_role == [admin,maintainer][_] action == read}",18,"allow {
+    input.object.type == ""software""
+    input.action == ""read""
+    input.subject.global_role == [""admin"",""observer+""][_]
+}",17,"allowed_roles := [""global_admin"", ""maintainer"", ""observer"", ""observer_plus""]
+
+allow {
+  input.object.type == ""software""  # Only applies to ""software"" objects
+  input.action == ""read""  # Only allows read access
+  any subject.global_role { role | role == ""admin"" || role == ""maintainer"" || role == ""observer"" || role == ""observer_plus""}
+}
+",0,20
