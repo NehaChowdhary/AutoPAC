@@ -15,8 +15,8 @@ sensitive business information. Consequently, we explore using a private and per
 ```
 ├── Dataset-AutoPAC          (Contains dataset of policies as codes and annotations that were created, processed and used in AutoPAC)
 ├── PrivateGPT
-├──────────├── Web Engine             (Contains the Python Flask code for Web Engine)
-├──────────├── Translator             (Contains the trained LLM and backend tech stack of Translator)
+├──── Web Engine             (Contains the Python Flask code for Web Engine)
+├──── Translator             (Contains the trained LLM and backend tech stack of Translator)
 ├── Test Setup               (Contains Unit Testing and Judge LLM codes used in AutoPAC)
 ```
 ---------------------------------------------------------------------------------------------------
