@@ -1,0 +1,79 @@
+question,answer
+All users can read the global pack.,"allow { 
+object.type == ""pack"" 
+not is_null(subject) 
+object.is_global_pack == true 
+action == read 
+} 
+"
+Team admin can write teams,"allow { 
+object.type == ""team"" 
+team_role(subject, object.id) == admin 
+action == write 
+} 
+"
+are specified.,"allow { 
+object.type == ""targeted_query"" 
+object.observer_can_run == false 
+is_null(subject.global_role) 
+action == run 
+"
+Global admins can read and write Apple MDM command results.,"allow { 
+object.type == ""mdm_apple_command_result"" 
+subject.global_role == admin 
+action == [read, write][_] 
+} 
+"
+"If role is admin, maintainer or observer on any team","team_role(subject, subject.teams[_].id) == [admin,maintainer,observer][_] 
+"
+Team users can read all software in their teams.,"allow { 
+not is_null(object.team_id) 
+object.type == ""software_inventory"" 
+team_role(subject, object.team_id) == [admin, maintainer, observer][_] 
+action == read 
+} 
+"
+target teams.,"allow { 
+object.type == ""targeted_query"" 
+object.observer_can_run == true 
+is_null(subject.global_role) 
+action == run 
+"
+Team admins and maintainers can read and write Apple MDM config profiles on their teams.,"allow { 
+not is_null(object.team_id) 
+object.team_id != 0 
+object.type == ""mdm_apple_config_profile"" 
+team_role(subject, object.team_id) == [admin, maintainer][_] 
+action == [read, write][_] 
+} 
+"
+Global admins can read and write Apple devices.,"allow { 
+object.type == ""mdm_apple_device"" 
+subject.global_role == admin 
+action == [read, write][_] 
+} 
+"
+Global admins can read and write Apple MDM installers.,"allow { 
+object.type == ""mdm_apple_installer"" 
+subject.global_role == admin 
+action == [read, write][_] 
+} 
+"
+Global admins can perform all operations on all users.,"allow { 
+object.type == ""user"" 
+subject.global_role == admin 
+action == [read, write, write_role, change_password][_] 
+} 
+"
+"For specific teams, only members can read","allow { 
+object.type == ""team"" 
+object.id != 0 
+team_role(subject, object.id) == [admin,maintainer][_] 
+action == read 
+}"
+Global admins may read/write invites,"allow { 
+object.type == ""invite"" 
+subject.global_role == admin 
+action == [read,write][_] 
+} 
+"

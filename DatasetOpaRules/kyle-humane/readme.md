@@ -1,0 +1,1 @@
+https://github.com/kyle-humane/fleet/blob/2e6352ed40aa06aa4abd01f892d6ab44f546c05a/server/authz/policy.rego#L4

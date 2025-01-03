@@ -1,0 +1,37 @@
+question,answer
+Any user can read other users,"allow { 
+object.type == ""user"" 
+not is_null(subject) 
+action == read 
+} 
+"
+Team admins and maintainers can read/write their team packs,"allow { 
+object.type == ""pack"" 
+team_role(subject, object.team_ids[_]) == [admin,maintainer][_] 
+action == [read, write][_] 
+} 
+"
+Team Observer can read policies for their teams,"allow { 
+not is_null(object.team_id) 
+object.type == ""policy"" 
+team_role(subject, object.team_id) == observer 
+action == read 
+} 
+"
+filtered to only teams that they observe.,"allow { 
+object.type == ""targeted_query"" 
+object.observer_can_run == true 
+is_null(subject.global_role) 
+action == run 
+ 
+not is_null(object.host_targets.teams) 
+ok_teams := { tmid | tmid := object.host_targets.teams[_]; team_role(subject, tmid) == [admin,maintainer,observer][_] } 
+count(ok_teams) == count(object.host_targets.teams) 
+} 
+"
+"For specific teams, only members can read","allow { 
+object.type == ""team"" 
+object.id != 0 
+team_role(subject, object.id) == [admin,maintainer][_] 
+action == read 
+}"

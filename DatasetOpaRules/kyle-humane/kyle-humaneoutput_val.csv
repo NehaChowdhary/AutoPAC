@@ -1,0 +1,50 @@
+question,answer
+#Team admins can create or edit new users,"allow { 
+object.type == ""user"" 
+team_role(subject, object.teams[_].id) == admin 
+action == [write, write_role][_] 
+} 
+"
+If role is observer on any team,"team_role(subject, subject.teams[_].id) == observer 
+action == run 
+} 
+"
+Allow read for global observer,"allow { 
+object.type == ""host"" 
+subject.global_role = observer 
+action == read 
+} 
+"
+Default deny,"default allow = false 
+"
+Allow anyone to list (must be filtered appropriately by the service).,"allow { 
+object.type == ""host"" 
+not is_null(subject) 
+action == list 
+} 
+"
+Team admins and maintainers can write to hosts of their own team,"allow { 
+object.type == ""host"" 
+team_role(subject, object.team_id) == [admin,maintainer][_] 
+action == write 
+} 
+"
+"For specific teams, only members can read","allow { 
+object.type == ""team"" 
+object.id != 0 
+team_role(subject, object.id) == [admin,maintainer][_] 
+action == read 
+}"
+Team admins and maintainers can read their team packs,"allow { 
+object.team_ids[_] == subject.teams[_].id 
+object.type == ""pack"" 
+team_role(subject, subject.teams[_].id) == [admin,maintainer][_] 
+action == [read, write][_] 
+} 
+"
+All users can read queries,"allow { 
+not is_null(subject) 
+object.type == ""query"" 
+action == read 
+} 
+"

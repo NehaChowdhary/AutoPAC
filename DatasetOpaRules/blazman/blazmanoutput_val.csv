@@ -1,0 +1,111 @@
+question,answer
+Global admins can read and write (i.e. trigger) cron schedules.,"allow { 
+object.type == ""cron_schedules"" 
+subject.global_role == admin 
+action == [read, write][_] 
+} 
+"
+"Global admins, maintainers and gitops can write queries.","allow { 
+object.type == ""query"" 
+subject.global_role == [admin, maintainer, gitops][_] 
+action == write 
+} 
+"
+Team admins and maintainers can read and write macos setup assistants on their teams.,"allow { 
+not is_null(object.team_id) 
+object.team_id != 0 
+object.type == ""mdm_apple_setup_assistant"" 
+team_role(subject, object.team_id) == [admin, maintainer][_] 
+action == [read, write][_] 
+} 
+"
+Global admins can read and write MDM apple information.,"allow { 
+object.type == ""mdm_apple"" 
+subject.global_role == admin 
+action == [read, write][_] 
+} 
+"
+Team admins and maintainers can read and write bootstrap packages on their teams.,"allow { 
+not is_null(object.team_id) 
+object.team_id != 0 
+object.type == ""mdm_apple_bootstrap_package"" 
+team_role(subject, object.team_id) == [admin, maintainer][_] 
+action == [read, write][_] 
+} 
+"
+"Team admin, maintainer and observer_plus running a non-observers_can_run query that belongs to their team when no target teams are specified.","allow { 
+object.type == ""targeted_query"" 
+object.observer_can_run == false 
+is_null(subject.global_role) 
+action == run 
+ 
+team_role(subject, object.team_id) == [admin, maintainer, observer_plus][_] 
+"
+Global observer and observer_plus can read any policies.,"allow { 
+object.type == ""policy"" 
+subject.global_role == [observer, observer_plus][_] 
+action == read 
+} 
+"
+"Global admin, maintainer, observer_plus and observer can read targets.","allow { 
+object.type == ""target"" 
+subject.global_role == [admin, maintainer, observer_plus, observer][_] 
+action == read 
+} 
+"
+Global gitops can write bootstrap packages.,"allow { 
+object.type == ""mdm_apple_bootstrap_package"" 
+subject.global_role == gitops 
+action == write 
+} 
+"
+"Team admin, maintainers and gitops can write queries for their teams.","allow { 
+object.type == ""query"" 
+not is_null(object.team_id) 
+team_role(subject, object.team_id) == [admin, maintainer, gitops][_] 
+action == write 
+} 
+"
+Global admins and maintainers can read and write MDM Apple settings.,"allow { 
+object.type == ""mdm_apple_settings"" 
+subject.global_role == [admin, maintainer][_] 
+action == [read, write][_] 
+} 
+"
+"Global admins, maintainers and observer_plus can run any new query.","allow { 
+object.type == ""query"" 
+subject.global_role == [admin, maintainer, observer_plus][_] 
+action = run_new 
+} 
+"
+Global observers can run only if observers_can_run.,"allow { 
+object.type == ""targeted_query"" 
+object.observer_can_run == true 
+subject.global_role == observer 
+action = run 
+} 
+"
+Team gitops can write policies for their teams.,"allow { 
+not is_null(object.team_id) 
+object.type == ""policy"" 
+team_role(subject, object.team_id) == gitops 
+action == write 
+} 
+"
+Team admins and maintainers can write (execute) MDM commands on hosts of their teams.,"allow { 
+not is_null(object.team_id) 
+object.type == ""mdm_command"" 
+team_role(subject, object.team_id) == [admin, maintainer][_] 
+action == write 
+} 
+"
+"Team admin, maintainer and observer_plus can run a new query.","allow { 
+object.type == ""query"""
+Global admins can read and write Apple devices.,"allow { 
+object.type == ""mdm_apple_device"" 
+subject.global_role == admin 
+action == [read, write][_] 
+} 
+"
+"Team admins, maintainers, observer_plus and observers can list hosts.","allow { 
+object.type == ""host"""

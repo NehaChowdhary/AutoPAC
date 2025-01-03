@@ -1,0 +1,80 @@
+question,answer
+Any user can read/write own session,"allow { 
+object.type == ""session"" 
+object.user_id == subject.id 
+action == [read, write][_] 
+} 
+"
+Only global users can read activities,"allow { 
+not is_null(subject.global_role) 
+object.type == ""activity"" 
+action == read 
+} 
+"
+Team admin can write teams,"allow { 
+object.type == ""team"" 
+team_role(subject, object.id) == admin 
+action == write 
+} 
+"
+Allow anyone to list (must be filtered appropriately by the service).,"allow { 
+object.type == ""host"" 
+not is_null(subject) 
+action == list 
+} 
+"
+Team admins and maintainers can read/write for appropriate teams,"allow { 
+object.type == ""enroll_secret"" 
+team_role(subject, object.team_id) == [admin, maintainer][_] 
+action == [read, write][_] 
+} 
+"
+Global admins and maintainers can read/write all packs.,"allow { 
+object.type == ""pack"" 
+subject.global_role == [admin, maintainer][_] 
+action == [read, write][_] 
+} 
+"
+"For specific teams, only members can read","allow { 
+object.type == ""team"" 
+object.id != 0 
+team_role(subject, object.id) == [admin,maintainer][_] 
+action == read 
+}"
+or global admins or global maintainers,"allow { 
+object.type == ""team"" 
+object.id != 0 
+subject.global_role == [admin, maintainer][_] 
+action == read 
+} 
+"
+Team users can read all software in their teams.,"allow { 
+not is_null(object.team_id) 
+object.type == ""software_inventory"" 
+team_role(subject, object.team_id) == [admin, maintainer, observer][_] 
+action == read 
+} 
+"
+Allow read for matching team admin/maintainer/observer,"allow { 
+object.type == ""host"" 
+team_role(subject, object.team_id) == [admin, maintainer, observer][_] 
+action == read 
+} 
+"
+Global admins and maintainers can write queries,"allow { 
+object.type == ""query"" 
+subject.global_role == admin 
+action == write 
+} 
+allow { 
+object.type == ""query"" 
+subject.global_role == maintainer 
+action == write 
+} 
+"
+Global users can read all software.,"allow { 
+object.type == ""software_inventory"" 
+subject.global_role == [admin, maintainer, observer][_] 
+action == read 
+} 
+"

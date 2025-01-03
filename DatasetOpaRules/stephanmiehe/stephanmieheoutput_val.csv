@@ -1,0 +1,62 @@
+question,answer
+Global admins and maintainers can read/write all,"allow { 
+object.type == ""enroll_secret"" 
+subject.global_role == [admin, maintainer][_] 
+action == [read, write][_] 
+} 
+"
+Only global admins can read/write carves,"allow { 
+object.type == ""carve"" 
+subject.global_role == admin 
+action == [read, write][_] 
+} 
+"
+Allow read/write for global admin/maintainer,"allow { 
+object.type == ""host"" 
+subject.global_role = admin 
+action == [read, write][_] 
+} 
+allow { 
+object.type == ""host"" 
+subject.global_role = maintainer 
+action == [read, write][_] 
+} 
+"
+Only global admins and maintainers can write labels,"allow { 
+object.type == ""label"" 
+subject.global_role == admin 
+action == write 
+} 
+allow { 
+object.type == ""label"" 
+subject.global_role == maintainer 
+action == write 
+} 
+"
+Allow read for matching team admin/maintainer/observer,"allow { 
+object.type == ""host"" 
+team_role(subject, object.team_id) == [admin, maintainer, observer][_] 
+action == read 
+} 
+"
+and there are no team targets,"is_null(object.host_targets.teams) 
+} 
+"
+Global Observer can read any policies,"allow { 
+object.type == ""policy"" 
+subject.global_role == observer 
+action == read 
+} 
+"
+if the user has no explicit role for that team.,"team_role(subject, team_id) = role { 
+subject_team := subject.teams[_] 
+subject_team.id == team_id 
+role := subject_team.role 
+} 
+"
+Allow anyone to list (must be filtered appropriately by the service).,"allow { 
+object.type == ""host"" 
+not is_null(subject) 
+action == list 
+} 
+"

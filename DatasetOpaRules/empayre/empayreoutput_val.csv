@@ -1,0 +1,106 @@
+question,answer
+Global admins can read and write MDM apple information.,"allow { 
+object.type == ""mdm_apple"" 
+subject.global_role == admin 
+action == [read, write][_] 
+} 
+"
+access) if the overall object is specified,"allow { 
+object.type == ""team"" 
+object.id == 0 
+not is_null(subject) 
+action == read 
+} 
+"
+Allow read/write for global admin/maintainer.,"allow { 
+object.type == ""host"" 
+subject.global_role == [admin, maintainer][_] 
+action == [read, write][_] 
+} 
+"
+Global admins and maintainers can read/write enroll secrets.,"allow { 
+object.type == ""enroll_secret"" 
+subject.global_role == [admin, maintainer][_] 
+action == [read, write][_] 
+} 
+"
+"Global admins, maintainers and observer_plus can run any query (saved and new).","allow { 
+object.type == ""targeted_query"" 
+subject.global_role == [admin, maintainer, observer_plus][_] 
+action = run 
+} 
+allow { 
+object.type == ""query"" 
+subject.global_role == [admin, maintainer, observer_plus][_] 
+action = run_new 
+} 
+"
+Any user can read and write self and change their own password.,"allow { 
+object.type == ""user"" 
+object.id == subject.id 
+object.id != 0 
+action == [read, write, change_password][_] 
+} 
+"
+Global admins and maintainers can read and write MDM Apple settings.,"allow { 
+object.type == ""mdm_apple_settings"" 
+subject.global_role == [admin, maintainer][_] 
+action == [read, write][_] 
+} 
+"
+Global admins can perform all operations on all users.,"allow { 
+object.type == ""user"" 
+subject.global_role == admin 
+action == [read, write, write_role, change_password][_] 
+} 
+"
+Global admins and gitops can write global config.,"allow { 
+object.type == ""app_config"" 
+subject.global_role == [admin, gitops][_] 
+action == write 
+} 
+"
+"Team admins, maintainers, observers and observer_plus can read all software in their teams.","allow { 
+not is_null(object.team_id) 
+object.type == ""software_inventory"" 
+team_role(subject, object.team_id) == [admin, maintainer, observer, observer_plus][_] 
+action == read 
+} 
+"
+Global gitops can write global enroll secrets.,"allow { 
+object.type == ""enroll_secret"" 
+object.is_global_secret 
+subject.global_role == gitops 
+action == write 
+} 
+"
+Global admins can read and write Apple MDM installers.,"allow { 
+object.type == ""mdm_apple_installer"" 
+subject.global_role == admin 
+action == [read, write][_] 
+} 
+"
+"Global admins, maintainers and gitops can read/write all types of packs.","allow { 
+object.type == ""pack"" 
+subject.global_role == [admin, maintainer, gitops][_] 
+action == [read, write][_] 
+} 
+"
+Global admins and gitops can write teams.,"allow { 
+object.type == ""team"" 
+subject.global_role == [admin, gitops][_] 
+action == write 
+} 
+"
+"Action used on object ""targeted_query"" used for running live queries.","run := ""run"""
+Team gitops can write macos setup assistants on their teams.,"allow { 
+not is_null(object.team_id) 
+object.team_id != 0 
+object.type == ""mdm_apple_setup_assistant"" 
+team_role(subject, object.team_id) == gitops 
+action == write 
+} 
+"
+User specific actions,"write_role := ""write_role"" 
+change_password := ""change_password"" 
+"

@@ -1,0 +1,1 @@
+https://github.com/KarlatIwoca/fleet/blob/160755ad1da88048a8a5dfe2ae7d7c94161e4f22/server/authz/policy.rego#L4

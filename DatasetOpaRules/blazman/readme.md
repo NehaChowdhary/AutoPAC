@@ -1,0 +1,1 @@
+https://github.com/blazman/fleet/blob/8c58738906881c667ecf200d97a57304e6113715/server/authz/policy.rego#L4

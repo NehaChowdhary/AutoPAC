@@ -1,0 +1,50 @@
+question,answer
+Team admins can perform all operations on the team users (except changing their password).,"allow { 
+object.type == ""user"" 
+team_role(subject, object.teams[_].id) == admin 
+action == [read, write, write_role][_] 
+} 
+"
+filtered to only teams that they observe.,"allow { 
+object.type == ""targeted_query"" 
+object.observer_can_run == true 
+is_null(subject.global_role) 
+action == run 
+ 
+not is_null(object.host_targets.teams) 
+ok_teams := { tmid | tmid := object.host_targets.teams[_]; team_role(subject, tmid) == [admin,maintainer,observer][_] } 
+count(ok_teams) == count(object.host_targets.teams) 
+} 
+"
+Admin can write global config,"allow { 
+object.type == ""app_config"" 
+subject.global_role == admin 
+action == write 
+} 
+"
+Team admin and maintainers can read and write policies for their teams,"allow { 
+not is_null(object.team_id) 
+object.type == ""policy"" 
+team_role(subject, object.team_id) == [admin,maintainer][_] 
+action == [read, write][_] 
+} 
+"
+All users can read the global pack.,"allow { 
+object.type == ""pack"" 
+not is_null(subject) 
+object.is_global_pack == true 
+action == read 
+} 
+"
+if the user has no explicit role for that team.,"team_role(subject, team_id) = role { 
+subject_team := subject.teams[_] 
+subject_team.id == team_id 
+role := subject_team.role 
+} 
+"
+Global Observer can read any policies,"allow { 
+object.type == ""policy"" 
+subject.global_role == observer 
+action == read 
+} 
+"

@@ -1,0 +1,1 @@
+https://github.com/CptOfEvilMinions/fleet/blob/23739760d45cc6aa0ca22aba1ec10304f2de5682/server/authz/policy.rego#L4

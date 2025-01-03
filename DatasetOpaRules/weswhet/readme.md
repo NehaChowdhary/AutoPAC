@@ -1,0 +1,1 @@
+https://github.com/weswhet/fleet/blob/99468ff4774c3f5de48ca63fc2f517da1968da48/server/authz/policy.rego#L4

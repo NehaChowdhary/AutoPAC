@@ -1,0 +1,97 @@
+question,answer
+Allow read/write for global admin/maintainer,"allow { 
+object.type == ""host"" 
+subject.global_role = admin 
+action == [read, write][_] 
+} 
+allow { 
+object.type == ""host"" 
+subject.global_role = maintainer 
+action == [read, write][_] 
+} 
+"
+Team users can read all software in their teams.,"allow { 
+not is_null(object.team_id) 
+object.type == ""software_inventory"" 
+team_role(subject, object.team_id) == [admin, maintainer, observer][_] 
+action == read 
+} 
+"
+Allow read for global observer,"allow { 
+object.type == ""host"" 
+subject.global_role = observer 
+action == read 
+} 
+"
+filtered to only teams that they maintain.,"allow { 
+object.type == ""targeted_query"" 
+object.observer_can_run == false 
+is_null(subject.global_role) 
+action == run 
+ 
+not is_null(object.host_targets.teams) 
+ok_teams := { tmid | tmid := object.host_targets.teams[_]; team_role(subject, tmid) == [admin,maintainer][_] } 
+count(ok_teams) == count(object.host_targets.teams) 
+} 
+"
+Global admins can read and write Apple DEP devices.,"allow { 
+object.type == ""mdm_apple_dep_device"" 
+subject.global_role == admin 
+action == [read, write][_] 
+}"
+All users can read labels,"allow { 
+object.type == ""label"" 
+not is_null(subject) 
+action == read 
+} 
+"
+filtered to only teams that they observe.,"allow { 
+object.type == ""targeted_query"" 
+object.observer_can_run == true 
+is_null(subject.global_role) 
+action == run 
+ 
+not is_null(object.host_targets.teams) 
+ok_teams := { tmid | tmid := object.host_targets.teams[_]; team_role(subject, tmid) == [admin,maintainer,observer][_] } 
+count(ok_teams) == count(object.host_targets.teams) 
+} 
+"
+Global admins may read/write invites,"allow { 
+object.type == ""invite"" 
+subject.global_role == admin 
+action == [read,write][_] 
+} 
+"
+Any user can read/write own session,"allow { 
+object.type == ""session"" 
+object.user_id == subject.id 
+action == [read, write][_] 
+} 
+"
+Global users can read all software.,"allow { 
+object.type == ""software_inventory"" 
+subject.global_role == [admin, maintainer, observer][_] 
+action == read 
+} 
+"
+Global admins and maintainers can run any,"allow { 
+object.type == ""targeted_query"" 
+subject.global_role == admin 
+action = run 
+} 
+allow { 
+object.type == ""targeted_query"" 
+subject.global_role == maintainer 
+action = run 
+} 
+allow { 
+object.type == ""query"" 
+subject.global_role == admin 
+action = run_new 
+} 
+allow { 
+object.type == ""query"" 
+subject.global_role == maintainer 
+action = run_new 
+} 
+"

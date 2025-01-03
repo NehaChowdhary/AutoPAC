@@ -1,0 +1,39 @@
+question,answer
+Admin can write global config,"allow { 
+object.type == ""app_config"" 
+subject.global_role == admin 
+action == write 
+} 
+"
+All users can read the global pack.,"allow { 
+object.type == ""pack"" 
+not is_null(subject) 
+object.is_global_pack == true 
+action == read 
+} 
+"
+Only global admins and maintainers can write labels,"allow { 
+object.type == ""label"" 
+subject.global_role == admin 
+action == write 
+} 
+allow { 
+object.type == ""label"" 
+subject.global_role == maintainer 
+action == write 
+} 
+"
+Default deny,"default allow = false 
+"
+Team admins and maintainers can read/write for appropriate teams,"allow { 
+object.type == ""enroll_secret"" 
+team_role(subject, object.team_id) == [admin, maintainer][_] 
+action == [read, write][_] 
+} 
+"
+are specified.,"allow { 
+object.type == ""targeted_query"" 
+object.observer_can_run == false 
+is_null(subject.global_role) 
+action == run 
+"

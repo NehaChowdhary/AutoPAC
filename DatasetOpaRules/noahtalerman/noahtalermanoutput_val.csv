@@ -1,0 +1,61 @@
+question,answer
+Global Admin and Maintainer can read and write policies,"allow { 
+object.type == ""policy"" 
+subject.global_role == [admin,maintainer][_] 
+action == [read, write][_] 
+} 
+"
+Team admin and maintainers can read and write policies for their teams,"allow { 
+not is_null(object.team_id) 
+object.type == ""policy"" 
+team_role(subject, object.team_id) == [admin,maintainer][_] 
+action == [read, write][_] 
+} 
+"
+Allow read for global observer,"allow { 
+object.type == ""host"" 
+subject.global_role = observer 
+action == read 
+} 
+"
+All users can read queries,"allow { 
+not is_null(subject) 
+object.type == ""query"" 
+action == read 
+} 
+"
+Global admins can read and write (i.e. trigger) cron schedules.,"allow { 
+object.type == ""cron_schedules"" 
+subject.global_role == admin 
+action == [read, write][_] 
+}"
+Global Observer can read any policies,"allow { 
+object.type == ""policy"" 
+subject.global_role == observer 
+action == read 
+} 
+"
+Global admins can read and write Apple MDM enrollments.,"allow { 
+object.type == ""mdm_apple_enrollment_profile"" 
+subject.global_role == admin 
+action == [read, write][_] 
+} 
+"
+User specific actions,"write_role := ""write_role"" 
+change_password := ""change_password"" 
+"
+"If role is admin, maintainer or observer on any team","team_role(subject, subject.teams[_].id) == [admin,maintainer,observer][_] 
+"
+Only global admins can read/write carves,"allow { 
+object.type == ""carve"" 
+subject.global_role == admin 
+action == [read, write][_] 
+} 
+"
+"Team admin, maintainers and observers can read global policies","allow { 
+is_null(object.team_id) 
+object.type == ""policy"" 
+team_role(subject, subject.teams[_].id) == [admin,maintainer,observer][_] 
+action == read 
+} 
+"

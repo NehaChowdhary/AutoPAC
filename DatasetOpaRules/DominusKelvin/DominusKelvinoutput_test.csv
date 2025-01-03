@@ -1,0 +1,33 @@
+question,answer
+If role is observer on any team,"team_role(subject, subject.teams[_].id) == observer 
+action == run 
+} 
+"
+Any logged in user can read global config,"allow { 
+object.type == ""app_config"" 
+not is_null(subject) 
+action == read 
+} 
+"
+All users can read software,"allow { 
+not is_null(subject) 
+object.type == ""software"" 
+action == read 
+}"
+Only admins and maintainers can write queries,"allow { 
+object.type == ""query"" 
+subject.global_role == admin 
+action == write 
+} 
+allow { 
+object.type == ""query"" 
+subject.global_role == maintainer 
+action == write 
+} 
+"
+Admins can read/write all user sessions,"allow { 
+object.type == ""session"" 
+subject.global_role == admin 
+action == [read, write][_] 
+} 
+"

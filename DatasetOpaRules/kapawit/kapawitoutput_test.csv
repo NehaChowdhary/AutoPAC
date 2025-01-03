@@ -1,0 +1,72 @@
+question,answer
+"Team admin, maintainer, observer_plus and observer running an observers_can_run query that belongs to their team and there are no target teams.","allow { 
+object.type == ""targeted_query"" 
+object.observer_can_run == true 
+is_null(subject.global_role) 
+action == run 
+ 
+team_role(subject, object.team_id) == [admin, maintainer, observer_plus, observer][_] 
+"
+"Global admins, maintainers, observer_plus and observers can read labels.","allow { 
+object.type == ""label"" 
+subject.global_role == [admin, maintainer, observer_plus, observer][_] 
+action == read 
+} 
+"
+must have the targets filtered to only teams that they maintain.,"allow { 
+object.type == ""targeted_query"" 
+object.observer_can_run == false 
+is_null(subject.global_role) 
+action == run 
+ 
+team_role(subject, object.team_id) == [admin, maintainer, observer_plus][_] 
+ 
+not is_null(object.host_targets.teams) 
+ok_teams := { tmid | tmid := object.host_targets.teams[_]; team_role(subject, tmid) == [admin, maintainer, observer_plus][_] } 
+count(ok_teams) == count(object.host_targets.teams) 
+} 
+"
+Global admins and maintainers can read and write MDM config profiles.,"allow { 
+object.type == ""mdm_config_profile"" 
+subject.global_role == [admin, maintainer][_] 
+action == [read, write][_] 
+} 
+"
+teams (not gitops as this is not something that relates to fleetctl apply).,"allow { 
+object.type == ""host_script_result"" 
+is_null(object.script_id) 
+not is_null(object.team_id) 
+team_role(subject, object.team_id) == [admin, maintainer][_] 
+action == write 
+} 
+"
+Team gitops can write MDM Apple Settings of their teams.,"allow { 
+not is_null(object.team_id) 
+object.type == ""mdm_apple_settings"" 
+team_role(subject, object.team_id) == gitops 
+action == write 
+} 
+"
+"Team admin, maintainers, and gitops can read and write policies for their teams.","allow { 
+not is_null(object.team_id) 
+object.type == ""policy"" 
+team_role(subject, object.team_id) == [admin, maintainer, gitops][_] 
+action == [read, write][_] 
+} 
+"
+"Global admins, maintainers, observer_plus and observers can read teams.","allow { 
+object.type == ""team"" 
+object.id != 0 
+subject.global_role == [admin, maintainer, observer, observer_plus][_] 
+action == read 
+} 
+"
+Any user can read and write self and change their own password.,"allow { 
+object.type == ""user"" 
+object.id == subject.id 
+object.id != 0 
+action == [read, write, change_password][_] 
+} 
+"
+"Action used on object ""query"" used for running ""new"" live queries.","run_new := ""run_new"" 
+"

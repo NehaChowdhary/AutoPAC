@@ -1,0 +1,69 @@
+question,answer
+"Team admin, maintainer, observer_plus and observer running an observers_can_run query that belongs to their team and there are no target teams.","allow { 
+object.type == ""targeted_query"" 
+object.observer_can_run == true 
+is_null(subject.global_role) 
+action == run 
+ 
+team_role(subject, object.team_id) == [admin, maintainer, observer_plus, observer][_] 
+"
+"Global admins, maintainers, observers and observer_plus can read MDM Apple commands.","allow { 
+object.type == ""mdm_apple_command"" 
+subject.global_role == [admin, maintainer, observer, observer_plus][_] 
+action == read 
+} 
+"
+must have the targets filtered to only teams that they maintain.,"allow { 
+object.type == ""targeted_query"" 
+object.observer_can_run == false 
+is_null(subject.global_role) 
+action == run 
+ 
+team_role(subject, object.team_id) == [admin, maintainer, observer_plus][_] 
+ 
+not is_null(object.host_targets.teams) 
+ok_teams := { tmid | tmid := object.host_targets.teams[_]; team_role(subject, tmid) == [admin, maintainer, observer_plus][_] } 
+count(ok_teams) == count(object.host_targets.teams) 
+} 
+"
+Global admins and maintainers can read and write policies.,"allow { 
+object.type == ""policy"" 
+subject.global_role == [admin, maintainer][_] 
+action == [read, write][_] 
+} 
+"
+"Team admins, maintainers, observers and observer_plus can read all software in their teams.","allow { 
+not is_null(object.team_id) 
+object.type == ""software_inventory"" 
+team_role(subject, object.team_id) == [admin, maintainer, observer, observer_plus][_] 
+action == read 
+} 
+"
+Team gitops can write MDM Apple Settings of their teams.,"allow { 
+not is_null(object.team_id) 
+object.type == ""mdm_apple_settings"" 
+team_role(subject, object.team_id) == gitops 
+action == write 
+} 
+"
+"Team admin, maintainers, observers and observers_plus can read global policies","allow { 
+is_null(object.team_id) 
+object.type == ""policy"" 
+team_role(subject, subject.teams[_].id) == [admin, maintainer, observer, observer_plus][_] 
+action == read 
+} 
+"
+Global gitops can write Apple MDM config profiles.,"allow { 
+object.type == ""mdm_apple_config_profile"" 
+subject.global_role == gitops 
+action == write 
+} 
+"
+"Global admin, maintainer, observer_plus and observer can read global config.","allow { 
+object.type == ""app_config"" 
+subject.global_role == [admin, maintainer, observer_plus, observer][_] 
+action == read 
+} 
+"
+"Action used on object ""query"" used for running ""new"" live queries.","run_new := ""run_new"" 
+"

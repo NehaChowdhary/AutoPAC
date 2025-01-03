@@ -1,0 +1,1 @@
+https://github.com/stephanmiehe/fleet-1/blob/f3926c4677a272ec2d64bf4ba58f53060c3fc3c8/server/authz/policy.rego#L4

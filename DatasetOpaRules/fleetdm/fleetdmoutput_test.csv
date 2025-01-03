@@ -1,0 +1,68 @@
+question,answer
+Team gitops can write MDM Apple Settings of their teams.,"allow { 
+not is_null(object.team_id) 
+object.type == ""mdm_apple_settings"" 
+team_role(subject, object.team_id) == gitops 
+action == write 
+} 
+"
+Only global admins can read/write carves,"allow { 
+object.type == ""carve"" 
+subject.global_role == admin 
+action == [read, write][_] 
+} 
+"
+"Team admin, maintainers, and gitops can write (upload) saved scripts for their teams.","allow { 
+object.type == ""script"" 
+not is_null(object.team_id) 
+team_role(subject, object.team_id) == [admin, maintainer, gitops][_] 
+action == write 
+} 
+"
+"Team admin, maintainers, observers and observers_plus can read global policies","allow { 
+is_null(object.team_id) 
+object.type == ""policy"" 
+team_role(subject, subject.teams[_].id) == [admin, maintainer, observer, observer_plus][_] 
+action == read 
+} 
+"
+"Global admins, maintainers, observers and observer_plus can read all software.","allow { 
+object.type == ""software_inventory"" 
+subject.global_role == [admin, maintainer, observer, observer_plus][_] 
+action == read 
+} 
+"
+"Global admins, maintainers, observer_plus and observers can list hosts.","allow { 
+object.type == ""host"" 
+base_roles := {admin, maintainer, observer_plus, observer} 
+extra_roles := {gitops} 
+allowed_list_roles(action, base_roles, extra_roles)[_] == subject.global_role 
+} 
+"
+Global admins and maintainers can write (execute) MDM commands.,"allow { 
+object.type == ""mdm_command"" 
+subject.global_role == [admin, maintainer][_] 
+action == write 
+} 
+"
+"Global admins, maintainers, observers and observer_plus can read MDM commands.","allow { 
+object.type == ""mdm_command"" 
+subject.global_role == [admin, maintainer, observer, observer_plus][_] 
+action == read 
+} 
+"
+Any user can read and write self and change their own password.,"allow { 
+object.type == ""user"" 
+object.id == subject.id 
+object.id != 0 
+action == [read, write, change_password][_] 
+} 
+"
+"Action used on object ""query"" used for running ""new"" live queries.","run_new := ""run_new"" 
+"
+Global admins and maintainers can read and write MDM Apple settings.,"allow { 
+object.type == ""mdm_apple_settings"" 
+subject.global_role == [admin, maintainer][_] 
+action == [read, write][_] 
+} 
+"

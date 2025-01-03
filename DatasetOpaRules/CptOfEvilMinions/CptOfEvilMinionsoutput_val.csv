@@ -1,0 +1,37 @@
+question,answer
+Any logged in user can read global config,"allow { 
+object.type == ""app_config"" 
+not is_null(subject) 
+action == read 
+} 
+"
+Team maintainers can read for appropriate teams,"allow { 
+object.type == ""enroll_secret"" 
+team_role(subject, object.team_id) == maintainer 
+action == read 
+} 
+"
+Admins can write all users + roles,"allow { 
+object.type == ""user"" 
+subject.global_role == admin 
+action == [write, write_role][_] 
+} 
+"
+Global maintainers can read all,"allow { 
+object.type == ""enroll_secret"" 
+subject.global_role == maintainer 
+action == read 
+} 
+"
+All users can read queries,"allow { 
+not is_null(subject) 
+object.type == ""query"" 
+action == read 
+} 
+"
+Admin can write global config,"allow { 
+object.type == ""app_config"" 
+subject.global_role == admin 
+action == write 
+} 
+"

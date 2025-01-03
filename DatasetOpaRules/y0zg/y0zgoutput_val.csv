@@ -1,0 +1,49 @@
+question,answer
+Global Observer users can read policies,"allow { 
+object.type == ""policy"" 
+subject.global_role == observer 
+action == [read][_] 
+} 
+"
+Only global admins can read/write carves,"allow { 
+object.type == ""carve"" 
+subject.global_role == admin 
+action == [read, write][_] 
+} 
+"
+Admins can read/write all,"allow { 
+object.type == ""enroll_secret"" 
+subject.global_role == admin 
+action == [read, write][_] 
+} 
+"
+All users can read software,"allow { 
+not is_null(subject) 
+object.type == ""software"" 
+action == read 
+}"
+Allow anyone to list (must be filtered appropriately by the service).,"allow { 
+object.type == ""host"" 
+not is_null(subject) 
+action == list 
+} 
+"
+Admin can write teams,"allow { 
+object.type == ""team"" 
+subject.global_role == admin 
+action == write 
+} 
+"
+Only global admins and maintainers can write labels,"allow { 
+object.type == ""label"" 
+subject.global_role == admin 
+action == write 
+} 
+allow { 
+object.type == ""label"" 
+subject.global_role == maintainer 
+action == write 
+} 
+"
+Team maintainer can run a new query,"allow { 
+object.type == ""query"""

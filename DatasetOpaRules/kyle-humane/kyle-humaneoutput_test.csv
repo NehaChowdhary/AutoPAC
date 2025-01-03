@@ -1,0 +1,31 @@
+question,answer
+Allow read/write for global admin/maintainer,"allow { 
+object.type == ""host"" 
+subject.global_role = admin 
+action == [read, write][_] 
+} 
+allow { 
+object.type == ""host"" 
+subject.global_role = maintainer 
+action == [read, write][_] 
+} 
+"
+filtered to only teams that they observe,"allow { 
+object.type == ""query"" 
+object.observer_can_run == true"
+or global admins,"allow { 
+object.type == ""team"" 
+object.id != 0 
+subject.global_role == admin 
+action == read 
+} 
+"
+filtered to only teams that they maintain,"allow { 
+object.type == ""query"""
+Any user can write self (besides role),"allow { 
+object.type == ""user"" 
+object.id == subject.id 
+object.id != 0 
+action == write 
+} 
+"

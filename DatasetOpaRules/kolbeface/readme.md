@@ -1,0 +1,1 @@
+https://github.com/kolbeface/fleet/blob/4dcb08a835052eec2d333e5fab3aae69c4ae7cac/server/authz/policy.rego#L4

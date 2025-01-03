@@ -1,0 +1,56 @@
+question,answer
+Only global admins can read/write carves,"allow { 
+object.type == ""carve"" 
+subject.global_role == admin 
+action == [read, write][_] 
+} 
+"
+target teams.,"allow { 
+object.type == ""targeted_query"" 
+object.observer_can_run == true 
+is_null(subject.global_role) 
+action == run 
+"
+Team admins and maintainers can read/write for appropriate teams,"allow { 
+object.type == ""enroll_secret"" 
+team_role(subject, object.team_id) == [admin, maintainer][_] 
+action == [read, write][_] 
+} 
+"
+"For specific teams, only members can read","allow { 
+object.type == ""team"" 
+object.id != 0 
+team_role(subject, object.id) == [admin,maintainer][_] 
+action == read 
+}"
+Observers can run only if observers_can_run,"allow { 
+object.type == ""targeted_query"" 
+object.observer_can_run == true 
+subject.global_role == observer 
+action = run 
+} 
+"
+Any logged in user can read global config,"allow { 
+object.type == ""app_config"" 
+not is_null(subject) 
+action == read 
+} 
+"
+access) if the overall object is specified,"allow { 
+object.type == ""team"" 
+object.id == 0 
+not is_null(subject) 
+action == read 
+}"
+"Team admin, maintainers and observers can read global policies","allow { 
+is_null(object.team_id) 
+object.type == ""policy"" 
+team_role(subject, subject.teams[_].id) == [admin,maintainer,observer][_] 
+action == read 
+} 
+"
+Default deny,"default allow = false 
+"
+Query specific actions,"run := ""run"" 
+run_new := ""run_new"" 
+"

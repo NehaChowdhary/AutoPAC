@@ -1,0 +1,36 @@
+question,answer
+Team maintainers can read global packs,"allow { 
+is_null(object.team_ids) 
+object.type == ""pack"" 
+team_role(subject, subject.teams[_].id) == maintainer 
+action == read 
+} 
+ 
+allow { 
+object.team_ids[_] == subject.teams[_].id 
+object.type == ""pack"" 
+team_role(subject, subject.teams[_].id) == maintainer 
+action == [read, write][_] 
+} 
+"
+If role is maintainer on any team,"team_role(subject, subject.teams[_].id) == admin 
+action == run_new 
+} 
+"
+If role is observer on any team,"team_role(subject, subject.teams[_].id) == observer 
+action == run 
+} 
+"
+Team maintainers can read for appropriate teams,"allow { 
+object.type == ""enroll_secret"" 
+team_role(subject, object.team_id) == maintainer 
+action == read 
+} 
+"
+Team maintainers can create new queries,"allow { 
+object.id == 0 # new queries have ID zero 
+object.type == ""query"" 
+team_role(subject, subject.teams[_].id) == maintainer 
+action == write 
+} 
+"

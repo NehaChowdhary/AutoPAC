@@ -1,0 +1,1 @@
+https://github.com/empayre/fleet/blob/51a689c7183c42b5fec7b535d6f330743a6cd730/server/authz/policy.rego#L4

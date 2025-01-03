@@ -1,0 +1,173 @@
+question,answer
+Default deny,"default allow = false 
+"
+Global Admin and Maintainer users can read and write policies,"allow { 
+object.type == ""policy"" 
+subject.global_role == admin 
+action == [read, write][_] 
+} 
+ 
+allow { 
+object.type == ""policy"" 
+subject.global_role == maintainer 
+action == [read, write][_] 
+} 
+"
+Any user can read/write own session,"allow { 
+object.type == ""session"" 
+object.user_id == subject.id 
+action == [read, write][_] 
+} 
+"
+All users can read queries,"allow { 
+not is_null(subject) 
+object.type == ""query"" 
+action == read 
+} 
+"
+Only admins and maintainers can write queries,"allow { 
+object.type == ""query"" 
+subject.global_role == admin 
+action == write 
+} 
+allow { 
+object.type == ""query"" 
+subject.global_role == maintainer 
+action == write 
+} 
+"
+Any user can write self (besides role),"allow { 
+object.type == ""user"" 
+object.id == subject.id 
+action == write 
+} 
+"
+Admins can write all users + roles,"allow { 
+object.type == ""user"" 
+subject.global_role == admin 
+action == [write, write_role][_] 
+} 
+"
+Any user can read other users,"allow { 
+object.type == ""user"" 
+not is_null(subject) 
+action == read 
+} 
+"
+Allow anyone to list (must be filtered appropriately by the service).,"allow { 
+object.type == ""host"" 
+not is_null(subject) 
+action == list 
+} 
+"
+Team maintainer can run a new query,"allow { 
+object.type == ""query"""
+Global maintainers can read all,"allow { 
+object.type == ""enroll_secret"" 
+subject.global_role == maintainer 
+action == read 
+} 
+"
+Only global admins and maintainers can read/write packs,"allow { 
+object.type == ""pack"" 
+subject.global_role == admin 
+action == [read, write][_] 
+} 
+allow { 
+object.type == ""pack"" 
+subject.global_role == maintainer 
+action == [read, write][_] 
+} 
+"
+Allow read for matching team maintainer/observer,"allow { 
+object.type == ""host"" 
+team_role(subject, object.team_id) == maintainer 
+action == read 
+} 
+allow { 
+object.type == ""host"" 
+team_role(subject, object.team_id) == observer 
+action == read 
+} 
+"
+If role is observer on any team,"team_role(subject, subject.teams[_].id) == observer 
+action == run 
+} 
+"
+All users can read activities,"allow { 
+not is_null(subject) 
+object.type == ""activity"" 
+action == read 
+} 
+"
+Only global admins can read/write carves,"allow { 
+object.type == ""carve"" 
+subject.global_role == admin 
+action == [read, write][_] 
+} 
+"
+filtered to only teams that they maintain,"allow { 
+object.type == ""query"""
+Only global admins may read/write invites,"allow { 
+object.type == ""invite"" 
+subject.global_role == admin 
+action == read 
+} 
+allow { 
+object.type == ""invite"" 
+subject.global_role == admin 
+action == write 
+} 
+"
+Team maintainers can read for appropriate teams,"allow { 
+object.type == ""enroll_secret"" 
+team_role(subject, object.team_id) == maintainer 
+action == read 
+} 
+"
+filtered to only teams that they observe,"allow { 
+object.type == ""query"" 
+object.observer_can_run == true"
+Team Maintainers can read and write policies,"allow { 
+object.type == ""policy"" 
+team_role(subject, subject.teams[_].id) == maintainer 
+action == [read, write][_] 
+} 
+"
+Allow read for global observer,"allow { 
+object.type == ""host"" 
+subject.global_role = observer 
+action == read 
+} 
+"
+Global admins and (team) maintainers can run any,"allow { 
+object.type == ""query"" 
+subject.global_role == admin 
+action = run 
+} 
+allow { 
+object.type == ""query"" 
+subject.global_role == maintainer 
+action = run 
+} 
+allow { 
+object.type == ""query"" 
+subject.global_role == admin 
+action = run_new 
+} 
+allow { 
+object.type == ""query"" 
+subject.global_role == maintainer 
+action = run_new 
+}"
+Admins can read/write all,"allow { 
+object.type == ""enroll_secret"" 
+subject.global_role == admin 
+action == [read, write][_] 
+} 
+"
+All users can read software,"allow { 
+not is_null(subject) 
+object.type == ""software"" 
+action == read 
+}"

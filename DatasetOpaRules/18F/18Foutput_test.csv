@@ -1,0 +1,50 @@
+question,answer
+Global admins and maintainers can run any,"allow { 
+object.type == ""targeted_query"" 
+subject.global_role == admin 
+action = run 
+} 
+allow { 
+object.type == ""targeted_query"" 
+subject.global_role == maintainer 
+action = run 
+} 
+allow { 
+object.type == ""query"" 
+subject.global_role == admin 
+action = run_new 
+} 
+allow { 
+object.type == ""query"" 
+subject.global_role == maintainer 
+action = run_new 
+} 
+"
+Team admins can perform all operations on the team users (except changing their password).,"allow { 
+object.type == ""user"" 
+team_role(subject, object.teams[_].id) == admin 
+action == [read, write, write_role][_] 
+} 
+"
+are specified.,"allow { 
+object.type == ""targeted_query"" 
+object.observer_can_run == false 
+is_null(subject.global_role) 
+action == run 
+"
+Any user can read/write own session,"allow { 
+object.type == ""session"" 
+object.user_id == subject.id 
+action == [read, write][_] 
+} 
+"
+User specific actions,"write_role := ""write_role"" 
+change_password := ""change_password"" 
+"
+All users can read the global pack.,"allow { 
+object.type == ""pack"" 
+not is_null(subject) 
+object.is_global_pack == true 
+action == read 
+} 
+"

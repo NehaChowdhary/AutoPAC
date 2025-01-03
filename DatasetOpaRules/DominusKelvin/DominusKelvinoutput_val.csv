@@ -1,0 +1,79 @@
+question,answer
+filtered to only teams that they maintain,"allow { 
+object.type == ""query"""
+Team maintainers can edit and delete only their own queries,"allow { 
+object.author_id == subject.id 
+object.type == ""query"" 
+team_role(subject, subject.teams[_].id) == maintainer 
+action == write 
+} 
+"
+If role is maintainer on any team,"team_role(subject, subject.teams[_].id) == admin 
+action == run_new 
+} 
+"
+Global Admin and Maintainer users can read and write policies,"allow { 
+object.type == [""policy"",""team_policy""][_] 
+subject.global_role == admin 
+action == [read, write][_] 
+} 
+ 
+allow { 
+is_null(object.team_id) 
+object.type == ""policy"" 
+subject.global_role == maintainer 
+action == [read, write][_] 
+} 
+ 
+allow { 
+object.type == ""policy"" 
+subject.global_role == maintainer 
+action == [read][_] 
+} 
+"
+All users can read activities,"allow { 
+not is_null(subject) 
+object.type == ""activity"" 
+action == read 
+} 
+"
+Global admins and (team) maintainers can run any,"allow { 
+object.type == ""query"" 
+subject.global_role == admin 
+action = run 
+} 
+allow { 
+object.type == ""query"" 
+subject.global_role == maintainer 
+action = run 
+} 
+allow { 
+object.type == ""query"" 
+subject.global_role == admin 
+action = run_new 
+} 
+allow { 
+object.type == ""query"" 
+subject.global_role == maintainer 
+action = run_new 
+}"
+Admin can write teams,"allow { 
+object.type == ""team"" 
+subject.global_role == admin 
+action == write 
+} 
+"
+Team maintainers can read global packs,"allow { 
+is_null(object.team_ids) 
+object.type == ""pack"" 
+team_role(subject, subject.teams[_].id) == maintainer 
+action == read 
+} 
+ 
+allow { 
+object.team_ids[_] == subject.teams[_].id 
+object.type == ""pack"" 
+team_role(subject, subject.teams[_].id) == maintainer 
+action == [read, write][_] 
+} 
+"

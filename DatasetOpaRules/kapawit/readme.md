@@ -1,0 +1,1 @@
+https://github.com/kapawit/fleet/blob/f5f9c32cf7b2cc9c7a09729f256a283626e55b0d/server/authz/policy.rego#L4

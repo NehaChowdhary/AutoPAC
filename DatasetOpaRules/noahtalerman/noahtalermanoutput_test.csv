@@ -1,0 +1,42 @@
+question,answer
+Admin can write global config,"allow { 
+object.type == ""app_config"" 
+subject.global_role == admin 
+action == write 
+} 
+"
+All users can read the global pack.,"allow { 
+object.type == ""pack"" 
+not is_null(subject) 
+object.is_global_pack == true 
+action == read 
+} 
+"
+Team admins and maintainers can edit and delete only their own queries,"allow { 
+object.author_id == subject.id 
+object.type == ""query"" 
+team_role(subject, subject.teams[_].id) == [admin,maintainer][_] 
+action == write 
+} 
+"
+Global users can read all software.,"allow { 
+object.type == ""software_inventory"" 
+subject.global_role == [admin, maintainer, observer][_] 
+action == read 
+} 
+"
+Default deny,"default allow = false 
+"
+are specified.,"allow { 
+object.type == ""targeted_query"" 
+object.observer_can_run == false 
+is_null(subject.global_role) 
+action == run 
+"
+"NOTE: Action ""read"" on a team's pack includes listing its scheduled queries.","allow { 
+object.type == ""pack"" 
+not is_null(object.pack_team_id) 
+team_role(subject, object.pack_team_id) == [admin, maintainer, observer][_] 
+action == read 
+} 
+"

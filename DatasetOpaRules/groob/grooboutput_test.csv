@@ -1,0 +1,31 @@
+question,answer
+if the user has no explicit role for that team.,"team_role(subject, team_id) = role { 
+subject_team := subject.teams[_] 
+subject_team.id == team_id 
+role := subject_team.role 
+} 
+"
+Allow read/write for global admin/maintainer,"allow { 
+object.type == ""host"" 
+subject.global_role = admin 
+action == [read, write][_] 
+} 
+allow { 
+object.type == ""host"" 
+subject.global_role = maintainer 
+action == [read, write][_] 
+} 
+"
+Only global admins and maintainers can write labels,"allow { 
+object.type == ""label"" 
+subject.global_role == admin 
+action == write 
+} 
+allow { 
+object.type == ""label"" 
+subject.global_role == maintainer 
+action == write 
+} 
+"
+Team admin can run a new query,"allow { 
+object.type == ""query"""

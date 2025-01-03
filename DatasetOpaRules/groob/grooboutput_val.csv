@@ -1,0 +1,41 @@
+question,answer
+All users can read labels,"allow { 
+object.type == ""label"" 
+not is_null(subject) 
+action == read 
+} 
+"
+Admin can write global config,"allow { 
+object.type == ""app_config"" 
+subject.global_role == admin 
+action == write 
+} 
+"
+If role is maintainer on any team,"team_role(subject, subject.teams[_].id) == admin 
+action == run_new 
+} 
+"
+Admin can write teams,"allow { 
+object.type == ""team"" 
+subject.global_role == admin 
+action == write 
+} 
+"
+(Team) observers can run only if observers_can_run,"allow { 
+object.type == ""query"" 
+object.observer_can_run == true 
+subject.global_role == observer 
+action = run 
+}"
+Admins can read/write all user sessions,"allow { 
+object.type == ""session"" 
+subject.global_role == admin 
+action == [read, write][_] 
+} 
+"
+Any logged in user can read global config,"allow { 
+object.type == ""app_config"" 
+not is_null(subject) 
+action == read 
+} 
+"

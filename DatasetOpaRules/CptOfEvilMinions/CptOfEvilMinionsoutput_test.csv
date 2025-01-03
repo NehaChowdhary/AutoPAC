@@ -1,0 +1,22 @@
+question,answer
+filtered to only teams that they maintain,"allow { 
+object.type == ""query"""
+Any user can read/write own session,"allow { 
+object.type == ""session"" 
+object.user_id == subject.id 
+action == [read, write][_] 
+} 
+"
+Only global admins and maintainers can read/write packs,"allow { 
+object.type == ""pack"" 
+subject.global_role == admin 
+action == [read, write][_] 
+} 
+allow { 
+object.type == ""pack"" 
+subject.global_role == maintainer 
+action == [read, write][_] 
+} 
+"
+Default deny,"default allow = false 
+"

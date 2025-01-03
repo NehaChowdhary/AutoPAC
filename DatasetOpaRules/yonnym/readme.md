@@ -1,0 +1,1 @@
+https://github.com/yonnym/fleet/blob/dd62695791e56b830968bae712dc40b563538b85/server/authz/policy.rego#L4

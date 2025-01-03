@@ -1,0 +1,1 @@
+https://github.com/TheDyingYAK/splunk_siem/blob/9f23fad5b25c35431d0f261d4b4b85100a7aa5d9/fleet/server/authz/policy.rego#L4

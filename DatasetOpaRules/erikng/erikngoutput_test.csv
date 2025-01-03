@@ -1,0 +1,50 @@
+question,answer
+Global gitops can write macos setup assistants.,"allow { 
+object.type == ""mdm_apple_setup_assistant"" 
+subject.global_role == gitops 
+action == write 
+} 
+"
+Team admin and maintainers can read and write policies for their teams.,"allow { 
+not is_null(object.team_id) 
+object.type == ""policy"" 
+team_role(subject, object.team_id) == [admin, maintainer][_] 
+action == [read, write][_] 
+} 
+"
+"Global admins, maintainers and gitops can write queries.","allow { 
+object.type == ""query"" 
+subject.global_role == [admin, maintainer, gitops][_] 
+action == write 
+} 
+"
+Global admins and gitops can write global config.,"allow { 
+object.type == ""app_config"" 
+subject.global_role == [admin, gitops][_] 
+action == write 
+} 
+"
+"If role is admin, maintainer, observer_plus or observer on any team.","team_role(subject, subject.teams[_].id) == [admin, maintainer, observer_plus, observer][_] 
+action == read 
+} 
+"
+"Action used on object ""query"" used for running ""new"" live queries.","run_new := ""run_new"" 
+"
+Team admins and maintainers can read/write for appropriate teams.,"allow { 
+object.type == ""enroll_secret"" 
+team_role(subject, object.team_id) == [admin, maintainer][_] 
+action == [read, write][_] 
+} 
+"
+Global admins and maintainers can read and write policies.,"allow { 
+object.type == ""policy"" 
+subject.global_role == [admin, maintainer][_] 
+action == [read, write][_] 
+} 
+"
+"Global admin, maintainer, observer_plus and observer can read global config.","allow { 
+object.type == ""app_config"" 
+subject.global_role == [admin, maintainer, observer_plus, observer][_] 
+action == read 
+} 
+"
