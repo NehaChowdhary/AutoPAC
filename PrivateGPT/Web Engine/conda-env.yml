@@ -1,0 +1,23 @@
+name: llm-train
+channels:
+  - defaults
+  - conda-forge
+  - bioconda
+dependencies:
+  - python=3.10
+  # - pandas==2.0.3
+  # - numpy==1.24.4
+  # - transformers==3.2.0
+  # - torch==2.2.1               
+  # - torchmetrics==1.3.1
+  # - sentencepiece==0.2.0
+  # - scikit-learn==1.3.2
+  # - pytorch-lightning==2.2.1
+  - pandas
+  - numpy
+  - transformers
+  # - torch      
+  - torchmetrics
+  - sentencepiece
+  - scikit-learn
+  - pytorch-lightning
