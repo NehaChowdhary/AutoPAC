@@ -9,6 +9,17 @@ not straightforward due to the need for complex dependency resolutions across pl
 language (NL)-based policies that are easy to comprehend. This paper explores large language models (LLMs) to facilitate the automated conversion of NL-based policies to PAC-complaint code. We observe that public LLMs like ChatGPT need thorough multi-round prompt engineering to generate PAC policies. This concerns privacy and security as the organizational policies are
 sensitive business information. Consequently, we explore using a private and personalized setup, like private LLMs. Notably, we observe that existing personalized LLMs like PrivateGPT fail to understand the system-specific policy semantics. Consequently, we develop a framework called AutoPAC, which uses a microservice architecture coupled with fine-tuned models to generate and validate PAC-complaint policies over a personalized LLM framework. An evaluation with more than 100 test cases indicates that the proposed framework effectively generates and validates PAC policies on the fly.
 
+---------------------------------------------------------------------------------------------------
+
+# Directory Structure
+
+1. Dataset of REGO Rules    (Contains dataset created, processed and used in AutoPAC)
+2. Client                   (Contains the Python Flask code for Web Engine)
+3. Server                   (Contains the trained LLM and backend tech stack of Translator)
+4. Test Setup               (Contains Unit Testing and Judge LLM codes used in AutoPAC)
+
+---------------------------------------------------------------------------------------------------
+
 # Setup OPA in Linux Distribution
 OPA Setup and Documentation Link: [OPEN POLICY AGENT](https://www.openpolicyagent.org/)
 
