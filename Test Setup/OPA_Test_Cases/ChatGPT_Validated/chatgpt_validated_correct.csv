@@ -1,0 +1,117 @@
+Index,Directory,Query,PrivateGPT_Rule,Validation_Passed
+0,kolbeface,User specific actions,"allow { object.type == ""action"" subject.global_role == admin action == [read, write][_] }",True
+1,kolbeface,Any user can read/write own session,"allow { object.type == ""session"" subject.global_role == admin action == [read, write][_] }",True
+2,kolbeface,Admin can write global config,"allow { object.type == ""app_config"" subject.global_role == admin action == write }",True
+3,kolbeface,Team admins can perform all operations on the team users (except changing their password).,"allow { object.type == ""user"" }",True
+4,kolbeface,Only global admins and maintainers can write labels,"allow { object.type == ""label"" subject.global_role == maintainer action == write }",True
+5,KarlatIwoca,"Team admin, maintainer, observer_plus and observer running an observers_can_run query that belongs to their team and there are no target teams.",allow { },True
+6,KarlatIwoca,Global admins and gitops can write global config.,"allow { object.type == ""host"" subject.global_role == gitops action == write }",True
+7,KarlatIwoca,Allow read for matching team admin/maintainer/observer/observer_plus.,"allow { object.type == ""team"" team_role(subject, subject.teams[_].id) == [admin,maintainer][_] action == read }",True
+8,KarlatIwoca,"Global admins, maintainers, observers and observer_plus can read MDM Apple commands.","allow { object.type == ""mdm_apple_command"" }",True
+9,KarlatIwoca,"Global admin, maintainer, observer_plus and observer can read global config.","allow { object.type == ""host"" subject.global_role == [admin, maintainer, observer_plus][_] }",True
+10,KarlatIwoca,Team gitops can write MDM Apple Settings of their teams.,"allow { object.type == ""mdm_apple_settings"" }",True
+11,KarlatIwoca,"Team admins, maintainers, observer_plus and observers can read global queries.","allow { object.type == ""query"" }",True
+12,KarlatIwoca,Global admins and maintainers can read and write policies.,"allow { object.type == ""policy"" subject.global_role == maintainer action == [read, write][_] }",True
+13,KarlatIwoca,Global admins can perform all operations on all users.,"allow { object.type == ""user"" subject.global_role == admin action == [read, write][_] }",True
+14,weswhet,Allow read for matching team maintainer/observer,"allow { object.type == ""team"" team_role(subject, subject.teams[_].id) == [admin,maintainer][_] action == read }",True
+15,weswhet,If role is maintainer on any team,"team_role(subject, subject.teams[_].id) == maintainer action == run }",False
+16,weswhet,Team maintainers can write to hosts of their own team,"allow { object.type == ""host"" team_role(object.team_id) == maintainer action == write }",True
+17,weswhet,Team maintainers can read global packs,"allow { object.type == ""pack"" }",True
+18,weswhet,All users can read queries,"allow { object.type == ""query"" not is_null(subject) action == read }",True
+19,y0zg,Allow read for matching team maintainer/observer,"allow { object.type == ""team"" team_role(subject, subject.teams[_].id) == [admin,maintainer][_] action == read }",True
+20,y0zg,If role is maintainer on any team,"team_role(subject, subject.teams[_].id) == maintainer action == run }",False
+21,y0zg,Team maintainers can write to hosts of their own team,"allow { object.type == ""host"" team_role(object.team_id) == maintainer action == write }",True
+22,y0zg,Team maintainers can read global packs,"allow { object.type == ""pack"" }",True
+23,y0zg,All users can read queries,"allow { object.type == ""query"" not is_null(subject) action == read }",True
+24,CptOfEvilMinions,Any user can read/write own session,"allow { object.type == ""session"" subject.global_role == admin action == [read, write][_] }",True
+25,CptOfEvilMinions,Allow anyone to list (must be filtered appropriately by the service).,"allow { object.type == ""host"" not is_null(object.host_targets) action == list }",True
+26,CptOfEvilMinions,Only global admins and maintainers can read/write packs,"allow { object.type == ""pack"" subject.global_role == maintainer action == [read, write][_] }",True
+27,stephanmiehe,Team admin and maintainers can read and write policies for their teams,"allow { object.type == ""team"" }",True
+28,stephanmiehe,Team admins and maintainers can read/write their team packs,"allow { object.type == ""pack"" }",True
+29,stephanmiehe,Any user can read other users.,"allow { object.type == ""user"" not is_null(object.id) action == read }",True
+30,stephanmiehe,If role is admin or maintainer on any team,"team_role(subject, team_id) == [admin, maintainer][_] }",False
+31,kyle-humane,Only global admins can read/write carves,"allow { object.type == ""carve"" subject.global_role == admin action == [read, write][_] }",True
+32,kyle-humane,If role is admin or maintainer on any team,"team_role(subject, team_id) == [admin, maintainer][_] }",False
+33,kyle-humane,Allow read/write for global admin/maintainer,"allow { object.type == ""host"" subject.global_role == maintainer action == [read, write][_] }",True
+34,kyle-humane,Global admins may read/write invites,"allow { object.type == ""invite"" subject.global_role == admin action == [read, write][_] }",True
+35,18F,All users can read the global pack.,"allow { object.type == ""pack"" not is_null(object.pack_id) action == read }",True
+36,18F,Global admins and maintainers can run any,"allow { object.type == ""user"" subject.global_role == maintainer action == run }",True
+37,18F,Team Observer can read policies for their teams,"allow { object.type == ""policy"" not is_null(object.team_id) action == read }",True
+38,18F,Default deny,"allow { object.type == ""host"" subject.global_role == admin action == [read, write][_] }",True
+39,18F,Team admins can perform all operations on the team users (except changing their password).,"allow { object.type == ""user"" }",True
+40,erikng,Global gitops can write macos setup assistants.,"allow { object.type == ""host"" subject.global_role == gitops action == write }",True
+41,erikng,Team admin and maintainers can read and write policies for their teams.,"allow { object.type == ""team"" }",True
+42,erikng,"Global admin, maintainer, observer_plus and observer can read global config.","allow { object.type == ""host"" subject.global_role == [admin, maintainer, observer_plus][_] }",True
+43,erikng,"Action used on object ""query"" used for running ""new"" live queries.","allow { object.type == ""query"" not is_null(object.host_targets.teams) action == [read, write][_] }",True
+44,erikng,Global admins and gitops can write global config.,"allow { object.type == ""host"" subject.global_role == gitops action == write }",True
+45,erikng,Team gitops can write policies for their teams.,"allow { object.type == ""policy"" not is_null(object.team_id) team_role(subject, object) == gitops action == write }",True
+46,erikng,Team gitops can write Apple MDM config profiles on their teams.,"allow { object.type == ""mdm_apple_config"" not is_null(object.team_id) }",True
+47,erikng,"Global admins, maintainers, observers and observer_plus can read the global pack.","allow { object.type == ""pack"" }",True
+48,erikng,"Global admins, maintainers, observer_plus and observers can read activities.","allow { object.type == ""activity"" subject.global_role == [admin, maintainer, observer_plus][_] action == read }",True
+49,noahtalerman,Team Observer can read policies for their teams,"allow { object.type == ""policy"" not is_null(object.team_id) action == read }",True
+50,noahtalerman,Admin can write global config,"allow { object.type == ""app_config"" subject.global_role == admin action == write }",True
+51,noahtalerman,Any user can read/write own session,"allow { object.type == ""session"" subject.global_role == admin action == [read, write][_] }",True
+52,noahtalerman,Team admins and maintainers can edit and delete only their own queries,"allow { object.type == ""query"" }",True
+53,noahtalerman,All users can read the global pack.,"allow { object.type == ""pack"" not is_null(object.pack_id) action == read }",True
+54,headmin,Global admins can read and write Apple devices.,"allow { object.type == ""user"" subject.global_role == admin action == [read, write][_] }",True
+55,headmin,Allow read/write for global admin/maintainer,"allow { object.type == ""host"" subject.global_role == maintainer action == [read, write][_] }",True
+56,headmin,Team admins can perform all operations on the team users (except changing their password).,"allow { object.type == ""user"" }",True
+57,headmin,Only global users can read activities,"allow { object.type == ""activity"" subject.global_role == admin action == read }",True
+58,headmin,Admin can write global config,"allow { object.type == ""app_config"" subject.global_role == admin action == write }",True
+59,lizthegrey,Any user can read/write own session,"allow { object.type == ""session"" subject.global_role == admin action == [read, write][_] }",True
+60,lizthegrey,Team admin and maintainers can read and write policies for their teams,"allow { object.type == ""team"" }",True
+61,lizthegrey,Team admin can write teams,"allow { not is_null(object.team_id) object.type == ""enroll_secret"" team_role(subject, subject.teams[_]).role == admin action == write }",True
+62,lizthegrey,Only global admins can read/write carves,"allow { object.type == ""carve"" subject.global_role == admin action == [read, write][_] }",True
+63,lizthegrey,All users can read queries,"allow { object.type == ""query"" not is_null(subject) action == read }",True
+64,groob,Allow read/write for global admin/maintainer,"allow { object.type == ""host"" subject.global_role == maintainer action == [read, write][_] }",True
+65,groob,Team maintainer can run a new query,"allow { object.type == ""query"" }",True
+66,groob,Allow read for matching team maintainer/observer,"allow { object.type == ""team"" team_role(subject, subject.teams[_].id) == [admin,maintainer][_] action == read }",True
+67,yonnym,Team admin and maintainers can read and write policies for their teams,"allow { object.type == ""team"" }",True
+68,yonnym,Team admins and maintainers can read/write their team packs,"allow { object.type == ""pack"" }",True
+69,yonnym,Any user can read other users,"allow { object.type == ""user"" not is_null(object.id) action == read }",True
+70,yonnym,If role is admin or maintainer on any team,"team_role(subject, team_id) == [admin, maintainer][_] }",True
+71,kapawit,"Team admin, maintainer, observer_plus and observer running an observers_can_run query that belongs to their team and there are no target teams.",allow { },True
+72,kapawit,Default deny,"allow { object.type == ""host"" subject.global_role == admin action == [read, write][_] }",True
+73,kapawit,"Allow read for host health for global admin/maintainer, team admins, observer.","allow { object.type == ""host"" }",True
+74,kapawit,"Global admins, maintainers, observer_plus and observers can read labels.","allow { object.type == ""label"" subject.global_role == [admin, maintainer, observer_plus][_] action == read }",True
+75,kapawit,Any user can read and write self and change their own password.,"allow { object.type == ""user"" }",True
+76,kapawit,Team gitops can write MDM Apple Settings of their teams.,"allow { object.type == ""mdm_apple_settings"" }",True
+77,kapawit,"Team admins, maintainers, gitops, observer_plus and observers can read queries for their teams.","allow { object.type == ""team"" }",True
+78,kapawit,Global admins and maintainers can read and write MDM config profiles.,"allow { object.type == ""mdm_config"" }",True
+79,kapawit,Team observer and observer_plus can read policies for their teams.,"allow { object.type == ""team"" not is_null(object.team_id) team_role(subject, object) == [observer, observer_plus][_] action == read }",True
+80,kapawit,Global admins and maintainers can write (execute) MDM commands.,"allow { object.type == ""mdm_command"" subject.global_role == [admin, maintainer][_] action == write }",True
+81,fleetdm,Team gitops can write MDM Apple Settings of their teams.,"allow { object.type == ""mdm_apple_settings"" }",True
+82,fleetdm,"Team admins, maintainers, observer_plus and observers can read global queries.","allow { object.type == ""query"" }",True
+83,fleetdm,"Allow read for global observer and observer_plus, selective_read for gitops.","allow { object.type == ""targeted_query"" }",True
+84,fleetdm,Only global admins can read/write carves,"allow { object.type == ""carve"" subject.global_role == admin action == [read, write][_] }",True
+85,fleetdm,Any user can read and write self and change their own password.,"allow { object.type == ""user"" }",True
+86,fleetdm,"Global admins, maintainers, observer_plus and observers can list hosts.","allow { object.type == ""host"" subject.global_role == [admin, maintainer, observer_plus][_] action == list }",True
+87,fleetdm,Global admins may read/write invites,"allow { object.type == ""invite"" subject.global_role == admin action == [read, write][_] }",True
+88,fleetdm,"Team admin, maintainers, observers and observers_plus can read global policies","allow { object.type == ""policy"" }",True
+89,fleetdm,Default deny,"allow { object.type == ""host"" subject.global_role == admin action == [read, write][_] }",True
+90,fleetdm,"Global admins, maintainers and gitops can write queries.","allow { object.type == ""host"" subject.global_role == [admin, maintainer, gitops][_] action == write }",True
+91,blazman,"Team admin, maintainer, observer_plus and observer running an observers_can_run query that belongs to their team and there are no target teams.",allow { },True
+92,blazman,Global admins and gitops can write global config.,"allow { object.type == ""host"" subject.global_role == gitops action == write }",True
+93,blazman,Allow read for matching team admin/maintainer/observer/observer_plus.,"allow { object.type == ""team"" team_role(subject, subject.teams[_].id) == [admin,maintainer][_] action == read }",True
+94,blazman,"Global admins, maintainers, observers and observer_plus can read MDM commands.","allow { object.type == ""mdm_command"" }",True
+95,blazman,"Global admin, maintainer, observer_plus and observer can read global config.","allow { object.type == ""host"" subject.global_role == [admin, maintainer, observer_plus][_] }",True
+96,blazman,Team gitops can write MDM config profiles on their teams.,"allow { object.type == ""mdm_config"" }",True
+97,blazman,"Team admins, maintainers, observer_plus and observers can read global queries.","allow { object.type == ""query"" }",True
+98,blazman,Global admins and maintainers can read and write policies.,"allow { object.type == ""policy"" subject.global_role == maintainer action == [read, write][_] }",True
+99,blazman,Global admins can perform all operations on all users.,"allow { object.type == ""user"" subject.global_role == admin action == [read, write][_] }",True
+100,empayre,Global gitops can write Apple MDM config profiles.,"allow { object.type == ""mdm_apple_config"" not is_null(object.host_targets.teams) action == write }",True
+101,empayre,Global admins can read and write Apple devices.,"allow { object.type == ""user"" subject.global_role == admin action == [read, write][_] }",True
+102,empayre,"Global admins, maintainers, observer_plus and observers can read queries.","allow { object.type == ""query"" subject.global_role == [admin, maintainer, observer_plus][_] action == read }",True
+103,empayre,Global admins can read and write (i.e. trigger) cron schedules.,"allow { object.type == ""cron"" subject.global_role == admin action == [read, write][_] }",True
+104,empayre,"Global admin, maintainer, observer_plus and observer can read global config.","allow { object.type == ""host"" subject.global_role == [admin, maintainer, observer_plus][_] }",True
+105,empayre,Global admins and maintainers can read and write policies.,"allow { object.type == ""policy"" subject.global_role == maintainer action == [read, write][_] }",True
+106,empayre,Team admins and maintainers can read and write MDM Apple Settings of their teams.,"allow { object.type == ""mdm_apple_settings"" }",True
+107,empayre,Allow read for matching team admin/maintainer/observer/observer_plus.,"allow { object.type == ""team"" team_role(subject, subject.teams[_].id) == [admin,maintainer][_] action == read }",True
+108,empayre,Global admins may read/write invites,"allow { object.type == ""invite"" subject.global_role == admin action == [read, write][_] }",True
+109,TheDyingYAK,User specific actions,"allow { object.type == ""action"" subject.global_role == admin action == [read, write][_] }",True
+110,TheDyingYAK,Any user can read/write own session,"allow { object.type == ""session"" subject.global_role == admin action == [read, write][_] }",True
+111,TheDyingYAK,Admin can write global config,"allow { object.type == ""app_config"" subject.global_role == admin action == write }",True
+112,TheDyingYAK,Team admins can perform all operations on the team users (except changing their password).,"allow { object.type == ""user"" }",True
+113,TheDyingYAK,Only global admins and maintainers can write labels,"allow { object.type == ""label"" subject.global_role == maintainer action == write }",True
+114,DominusKelvin,Any logged in user can read global config,"allow { object.type == ""user"" subject.global_role == [admin, maintainer][_] action == read }",True
+115,DominusKelvin,If role is observer on any team,"allow { object.type == ""team"" team_role(subject, subject.teams[_].id) == observer action == read }",True

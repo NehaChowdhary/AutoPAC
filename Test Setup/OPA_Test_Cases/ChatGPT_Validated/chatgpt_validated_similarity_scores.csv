@@ -1,0 +1,17 @@
+,Index,Directory,Query,PrivateGPT_Rule,Actual_Rule,Similarity_Score
+0,0,weswhet,If role is maintainer on any team,"team_role(subject, subject.teams[_].id) == maintainer action == run }","team_role(subject, subject.teams[_].id) == admin 
+action == run_new 
+} 
+",0.9470222628139748
+1,1,y0zg,If role is maintainer on any team,"team_role(subject, subject.teams[_].id) == maintainer action == run }","team_role(subject, subject.teams[_].id) == admin 
+action == run_new 
+} 
+",0.9470222628139748
+2,2,stephanmiehe,If role is admin or maintainer on any team,"team_role(subject, team_id) == [admin, maintainer][_] }","team_role(subject, subject.teams[_].id) == [admin,maintainer][_] 
+action == run_new 
+} 
+",0.36199474416207345
+3,3,kyle-humane,If role is admin or maintainer on any team,"team_role(subject, team_id) == [admin, maintainer][_] }","team_role(subject, subject.teams[_].id) == [admin,maintainer][_] 
+action == run_new 
+} 
+",0.36199474416207345

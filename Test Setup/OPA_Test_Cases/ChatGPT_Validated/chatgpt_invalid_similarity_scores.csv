@@ -1,0 +1,41 @@
+,Index,Directory,Query,PrivateGPT_Rule,Actual_Rule,Similarity_Score
+0,0,KarlatIwoca,"Team admin, maintainer, observer_plus and observer running an observers_can_run query that belongs to their team and there are no target teams.",allow { },"allow { 
+object.type == ""targeted_query"" 
+object.observer_can_run == true 
+is_null(subject.global_role) 
+action == run 
+ 
+team_role(subject, object.team_id) == [admin, maintainer, observer_plus, observer][_] 
+",0.1324745619833856
+1,1,weswhet,If role is maintainer on any team,"team_role(subject, subject.teams[_].id) == maintainer action == run }","team_role(subject, subject.teams[_].id) == admin 
+action == run_new 
+} 
+",0.9470222628139748
+2,2,y0zg,If role is maintainer on any team,"team_role(subject, subject.teams[_].id) == maintainer action == run }","team_role(subject, subject.teams[_].id) == admin 
+action == run_new 
+} 
+",0.9470222628139748
+3,3,stephanmiehe,If role is admin or maintainer on any team,"team_role(subject, team_id) == [admin, maintainer][_] }","team_role(subject, subject.teams[_].id) == [admin,maintainer][_] 
+action == run_new 
+} 
+",0.36199474416207345
+4,4,kyle-humane,If role is admin or maintainer on any team,"team_role(subject, team_id) == [admin, maintainer][_] }","team_role(subject, subject.teams[_].id) == [admin,maintainer][_] 
+action == run_new 
+} 
+",0.36199474416207345
+5,5,kapawit,"Team admin, maintainer, observer_plus and observer running an observers_can_run query that belongs to their team and there are no target teams.",allow { },"allow { 
+object.type == ""targeted_query"" 
+object.observer_can_run == true 
+is_null(subject.global_role) 
+action == run 
+ 
+team_role(subject, object.team_id) == [admin, maintainer, observer_plus, observer][_] 
+",0.1324745619833856
+6,6,blazman,"Team admin, maintainer, observer_plus and observer running an observers_can_run query that belongs to their team and there are no target teams.",allow { },"allow { 
+object.type == ""targeted_query"" 
+object.observer_can_run == true 
+is_null(subject.global_role) 
+action == run 
+ 
+team_role(subject, object.team_id) == [admin, maintainer, observer_plus, observer][_] 
+",0.1324745619833856
