@@ -13,10 +13,10 @@ sensitive business information. Consequently, we explore using a private and per
 
 # Directory Structure
 
-1. Dataset of REGO Rules    (Contains dataset created, processed and used in AutoPAC)
-2. Client                   (Contains the Python Flask code for Web Engine)
-3. Server                   (Contains the trained LLM and backend tech stack of Translator)
-4. Test Setup               (Contains Unit Testing and Judge LLM codes used in AutoPAC)
+├── Dataset of REGO Rules    (Contains dataset created, processed and used in AutoPAC)
+├── Client                   (Contains the Python Flask code for Web Engine)
+├── Server                   (Contains the trained LLM and backend tech stack of Translator)
+├── Test Setup               (Contains Unit Testing and Judge LLM codes used in AutoPAC)
 
 ---------------------------------------------------------------------------------------------------
 
