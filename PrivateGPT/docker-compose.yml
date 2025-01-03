@@ -1,0 +1,65 @@
+version: '3'
+
+services:
+  privategpt-server:
+    build: ./privategpt_server/.
+    container_name: privategpt-server
+    environment:
+      - MODEL_NAME=Salesforce/codet5-small
+      - MODEL_DIR=codet5_fine_tuned/codet5-fine-tuned.ckpt
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 10500M
+        reservations:
+          cpus: '4'
+          memory: 7000M
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "curl -X POST -F 'question=Hi, how are you?' http://localhost:5000/get_answer"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 5s
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./privategpt_server/codet5_fine_tuned/:/root/privateGPT/server/codet5_fine_tuned/
+    networks:
+      mynetwork:
+        ipv4_address: 172.18.0.22
+
+  privategpt-client:
+    build: ./privategpt_client/.
+    container_name: privategpt-client
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1500M
+        reservations:
+          cpus: '1'
+          memory: 1000M
+    depends_on:
+      - privategpt-server
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 50s
+      retries: 5
+      start_period: 30s
+    restart: always
+    ports:
+      - "3000:3000"
+    # networks:
+    #   mynetwork:
+    #     ipv4_address: 172.18.0.21
+
+networks:
+  mynetwork:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.18.0.0/16
