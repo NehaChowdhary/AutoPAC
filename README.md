@@ -12,12 +12,12 @@ sensitive business information. Consequently, we explore using a private and per
 ---------------------------------------------------------------------------------------------------
 
 # Directory Structure
-
+```
 ├── Dataset of REGO Rules    (Contains dataset created, processed and used in AutoPAC)
 ├── Client                   (Contains the Python Flask code for Web Engine)
 ├── Server                   (Contains the trained LLM and backend tech stack of Translator)
 ├── Test Setup               (Contains Unit Testing and Judge LLM codes used in AutoPAC)
-
+```
 ---------------------------------------------------------------------------------------------------
 
 # Setup OPA in Linux Distribution
